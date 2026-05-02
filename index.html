@@ -35,7 +35,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Subtle paper texture */
 body::before {
   content: '';
   position: fixed;
@@ -46,6 +45,47 @@ body::before {
 }
 
 .app { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* ── SYNC STATUS ── */
+.sync-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 999;
+  padding: 8px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  transition: all 0.3s;
+  transform: translateY(-100%);
+}
+.sync-bar.show { transform: translateY(0); }
+.sync-bar.syncing { background: var(--gold); color: var(--ink); }
+.sync-bar.synced { background: #059669; color: white; }
+.sync-bar.error { background: #dc2626; color: white; }
+
+/* ── LIVE INDICATOR ── */
+.live-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.live-dot::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ink3);
+  transition: background 0.3s;
+}
+.live-dot.connected::before { background: #059669; box-shadow: 0 0 6px #059669; }
+.live-dot.connecting::before { background: var(--gold); animation: pulse 1s infinite; }
+
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
 /* ── HEADER ── */
 header {
@@ -62,6 +102,10 @@ header {
   text-transform: uppercase;
   color: var(--ink3);
   margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
 }
 .header-title {
   font-family: 'Bebas Neue', sans-serif;
@@ -72,7 +116,6 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
 }
 .title-cooz { color: var(--cooz); }
 .title-vs {
@@ -92,7 +135,7 @@ header {
   margin-top: 10px;
 }
 
-/* ── RIVALRY SCOREBOARD ── */
+/* ── SCOREBOARD ── */
 .scoreboard {
   background: var(--ink);
   border-radius: var(--radius);
@@ -147,8 +190,7 @@ header {
 }
 .score-divider { text-align: center; position: relative; }
 .score-divider-line {
-  width: 1px;
-  height: 80px;
+  width: 1px; height: 80px;
   background: rgba(255,255,255,0.15);
   margin: 0 auto;
 }
@@ -245,7 +287,6 @@ header {
 @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
 /* ── LOG GAME ── */
-.log-section { margin-bottom: 24px; }
 .section-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 22px;
@@ -256,12 +297,7 @@ header {
   align-items: center;
   gap: 10px;
 }
-.section-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
 .matchup-grid {
   display: grid;
@@ -280,9 +316,10 @@ header {
 }
 .matchup-card:hover { border-color: var(--ink3); transform: translateY(-1px); }
 .matchup-card.selected { border-color: var(--ink); background: var(--ink); }
-.matchup-card.selected .mc-team { color: white; }
-.matchup-card.selected .mc-vs { color: rgba(255,255,255,0.5); }
+.matchup-card.selected .mc-team,
+.matchup-card.selected .mc-vs,
 .matchup-card.selected .mc-label { color: rgba(255,255,255,0.6); }
+.matchup-card.selected .mc-team { color: white; }
 .mc-label {
   font-family: 'DM Mono', monospace;
   font-size: 9px;
@@ -298,14 +335,8 @@ header {
   color: var(--ink);
   line-height: 1.2;
 }
-.mc-vs {
-  font-size: 11px;
-  color: var(--ink3);
-  font-style: italic;
-  margin: 4px 0;
-}
+.mc-vs { font-size: 11px; color: var(--ink3); font-style: italic; margin: 4px 0; }
 
-/* Winner picker */
 .winner-section {
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -324,11 +355,7 @@ header {
   margin-bottom: 14px;
   text-align: center;
 }
-.winner-btns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
+.winner-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .winner-btn {
   padding: 16px;
   border-radius: var(--radius);
@@ -372,6 +399,7 @@ header {
 }
 .log-btn.show { display: block; }
 .log-btn:hover { background: #2a2420; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,22,18,0.2); }
+.log-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 .log-success {
   text-align: center;
@@ -388,7 +416,7 @@ header {
   animation: fadeUp 0.3s ease;
 }
 
-/* ── ALL MATCHUPS ── */
+/* ── MATCHUP STATS ── */
 .matchup-stat-card {
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -401,7 +429,6 @@ header {
   gap: 16px;
   box-shadow: var(--shadow);
 }
-.ms-team { }
 .ms-name {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 20px;
@@ -427,19 +454,8 @@ header {
   color: var(--ink);
 }
 .ms-dash { color: var(--ink3); margin: 0 2px; }
-.ms-bar {
-  height: 4px;
-  border-radius: 2px;
-  background: var(--border);
-  margin-top: 8px;
-  overflow: hidden;
-}
-.ms-bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--cooz), var(--cooz-mid));
-  transition: width 0.4s ease;
-}
+.ms-bar { height: 4px; border-radius: 2px; background: var(--border); margin-top: 8px; overflow: hidden; }
+.ms-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--cooz), var(--cooz-mid)); transition: width 0.4s ease; }
 .ms-games {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -450,7 +466,7 @@ header {
 }
 .ms-right { text-align: right; }
 
-/* ── INDIVIDUAL STATS ── */
+/* ── PLAYERS ── */
 .player-stat {
   background: var(--bg2);
   border: 1px solid var(--border);
@@ -462,55 +478,19 @@ header {
   gap: 16px;
   box-shadow: var(--shadow);
 }
-.ps-rank {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 32px;
-  color: var(--border);
-  width: 32px;
-  text-align: center;
-  flex-shrink: 0;
-}
+.ps-rank { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--border); width: 32px; text-align: center; flex-shrink: 0; }
 .ps-rank.top { color: var(--gold); }
-.ps-avatar {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  flex-shrink: 0;
-}
+.ps-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 20px; flex-shrink: 0; }
 .ps-avatar.cooz { background: var(--cooz-light); color: var(--cooz); }
 .ps-avatar.keez { background: var(--keez-light); color: var(--keez); }
 .ps-info { flex: 1; }
-.ps-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  letter-spacing: 0.04em;
-  line-height: 1;
-}
-.ps-team {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-top: 2px;
-}
+.ps-name { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.04em; line-height: 1; }
+.ps-team { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
 .ps-team.cooz { color: var(--cooz); }
 .ps-team.keez { color: var(--keez); }
 .ps-stats { text-align: right; }
-.ps-record {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px;
-  letter-spacing: 0.04em;
-  line-height: 1;
-}
-.ps-pct {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: var(--ink3);
-  letter-spacing: 0.06em;
-  margin-top: 2px;
-}
+.ps-record { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 0.04em; line-height: 1; }
+.ps-pct { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink3); letter-spacing: 0.06em; margin-top: 2px; }
 
 /* ── HISTORY ── */
 .history-item {
@@ -523,81 +503,35 @@ header {
   align-items: center;
   gap: 12px;
 }
-.hi-date {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--ink3);
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  flex-shrink: 0;
-  width: 72px;
-}
-.hi-matchup {
-  flex: 1;
-  font-size: 14px;
-  color: var(--ink2);
-}
+.hi-date { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--ink3); letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; width: 72px; }
+.hi-matchup { flex: 1; font-size: 14px; color: var(--ink2); }
 .hi-matchup strong { color: var(--ink); }
-.hi-winner {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
+.hi-winner { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
 .hi-winner.cooz { background: var(--cooz-light); color: var(--cooz); }
 .hi-winner.keez { background: var(--keez-light); color: var(--keez); }
 .hi-winner.mixed { background: #f5f5f5; color: var(--ink3); }
-.hi-delete {
-  background: none; border: none; cursor: pointer;
-  color: var(--border); font-size: 14px;
-  transition: color 0.12s; flex-shrink: 0;
-}
+.hi-delete { background: none; border: none; cursor: pointer; color: var(--border); font-size: 14px; transition: color 0.12s; flex-shrink: 0; }
 .hi-delete:hover { color: #dc2626; }
 
-.history-empty {
-  text-align: center;
-  padding: 40px;
-  color: var(--ink3);
-  font-style: italic;
-  font-size: 16px;
-}
-
-.clear-btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px 12px;
-  color: var(--ink3);
-  cursor: pointer;
-  transition: all 0.12s;
-  margin-bottom: 14px;
-}
+.history-empty { text-align: center; padding: 40px; color: var(--ink3); font-style: italic; font-size: 16px; }
+.clear-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; background: none; border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; color: var(--ink3); cursor: pointer; transition: all 0.12s; margin-bottom: 14px; }
 .clear-btn:hover { border-color: #dc2626; color: #dc2626; }
+.no-games { text-align: center; padding: 32px; color: var(--ink3); font-style: italic; font-size: 16px; }
 
-.no-games {
-  text-align: center;
-  padding: 32px;
-  color: var(--ink3);
-  font-style: italic;
-  font-size: 16px;
-}
+.loading { text-align: center; padding: 40px; color: var(--ink3); font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
 </style>
 </head>
 <body>
+
+<div class="sync-bar" id="sync-bar"></div>
+
 <div class="app">
 
-  <!-- HEADER -->
   <header>
-    <div class="header-eyebrow">The Official Record · Est. 2026</div>
+    <div class="header-eyebrow">
+      The Official Record · Est. 2026
+      <span class="live-dot connecting" id="live-dot">connecting</span>
+    </div>
     <div class="header-title">
       <span class="title-cooz">COOZ</span>
       <span class="title-vs">vs</span>
@@ -606,7 +540,6 @@ header {
     <div class="header-sub">Al & Kim · Chris & Sue · The Rivalry That Never Ends</div>
   </header>
 
-  <!-- SCOREBOARD -->
   <div class="scoreboard">
     <div class="score-team">
       <div class="score-team-name cooz">Team Cooz</div>
@@ -628,88 +561,169 @@ header {
 
   <div class="streak-banner" id="streak-banner"></div>
 
-  <!-- TRASH TALK -->
   <div class="trash-talk" id="trash-talk-box">
     <div class="trash-talk-label">📣 Bulletin Board</div>
-    <div class="trash-talk-text" id="trash-talk-text">No games logged yet. Someone's afraid to start the record...</div>
-    <button class="trash-refresh" onclick="refreshTrashTalk()" title="New quote">↻</button>
+    <div class="trash-talk-text" id="trash-talk-text">Connecting to the rivalry database...</div>
+    <button class="trash-refresh" onClick="refreshTrashTalk()" title="New quote">↻</button>
   </div>
 
-  <!-- TABS -->
   <nav class="tabs">
-    <button class="tab active" onclick="showTab('log')">Log Game</button>
-    <button class="tab" onclick="showTab('matchups')">Matchups</button>
-    <button class="tab" onclick="showTab('players')">Players</button>
-    <button class="tab" onclick="showTab('history')">History</button>
+    <button class="tab active" onClick="showTab('log')">Log Game</button>
+    <button class="tab" onClick="showTab('matchups')">Matchups</button>
+    <button class="tab" onClick="showTab('players')">Players</button>
+    <button class="tab" onClick="showTab('history')">History</button>
   </nav>
 
-  <!-- LOG GAME -->
   <div class="panel active" id="panel-log">
-    <div class="log-section">
-      <div class="section-title">Pick the Matchup</div>
-      <div class="matchup-grid" id="matchup-grid"></div>
-    </div>
-
+    <div class="section-title">Pick the Matchup</div>
+    <div class="matchup-grid" id="matchup-grid"></div>
     <div class="winner-section" id="winner-section">
       <div class="winner-label">Who Won?</div>
       <div class="winner-btns" id="winner-btns"></div>
     </div>
-
-    <button class="log-btn" id="log-btn" onclick="logGame()">Record Win →</button>
-    <div class="log-success" id="log-success">✓ Game recorded!</div>
+    <button class="log-btn" id="log-btn" onClick="logGame()">Record Win →</button>
+    <div class="log-success" id="log-success">✓ Game recorded — all phones updated!</div>
   </div>
 
-  <!-- MATCHUPS -->
   <div class="panel" id="panel-matchups">
     <div class="section-title">All Matchup Records</div>
-    <div id="matchups-output"></div>
+    <div id="matchups-output"><div class="loading">Loading...</div></div>
   </div>
 
-  <!-- PLAYERS -->
   <div class="panel" id="panel-players">
     <div class="section-title">Individual Records</div>
-    <div id="players-output"></div>
+    <div id="players-output"><div class="loading">Loading...</div></div>
   </div>
 
-  <!-- HISTORY -->
   <div class="panel" id="panel-history">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
       <div class="section-title" style="margin:0">Game Log</div>
-      <button class="clear-btn" onclick="clearAll()">Clear All</button>
+      <button class="clear-btn" onClick="clearAll()">Clear All</button>
     </div>
-    <div id="history-output"></div>
+    <div id="history-output"><div class="loading">Loading...</div></div>
   </div>
 
 </div>
 
-<script>
-// ── DATA ──
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD08fXyMt6S3m8_BX5U1zUcZbhMr1Yus-0",
+  authDomain: "cooz-vs-keez.firebaseapp.com",
+  projectId: "cooz-vs-keez",
+  storageBucket: "cooz-vs-keez.firebasestorage.app",
+  messagingSenderId: "811193182362",
+  appId: "1:811193182362:web:5e019036f1525526449723"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ── CONSTANTS ──
 const PLAYERS = {
-  al:   { name: 'Al',   team: 'cooz', initial: 'A' },
-  kim:  { name: 'Kim',  team: 'cooz', initial: 'K' },
-  chris:{ name: 'Chris',team: 'keez', initial: 'C' },
-  sue:  { name: 'Sue',  team: 'keez', initial: 'S' },
+  al:    { name: 'Al',    team: 'cooz', initial: 'A' },
+  kim:   { name: 'Kim',   team: 'cooz', initial: 'K' },
+  chris: { name: 'Chris', team: 'keez', initial: 'C' },
+  sue:   { name: 'Sue',   team: 'keez', initial: 'S' },
 };
 
 const MATCHUPS = [
-  { id: 'classic',  a: ['al','kim'],   b: ['chris','sue'], label: 'Classic',  aLabel:'Cooz', bLabel:'Keez' },
-  { id: 'mixed1',   a: ['al','sue'],   b: ['kim','chris'], label: 'Mixed I',  aLabel:'Al & Sue', bLabel:'Kim & Chris' },
-  { id: 'mixed2',   a: ['al','chris'], b: ['kim','sue'],   label: 'Mixed II', aLabel:'Al & Chris', bLabel:'Kim & Sue' },
+  { id: 'classic', a: ['al','kim'],    b: ['chris','sue'], label: 'Classic',  aLabel: 'Team Cooz', bLabel: 'Team Keez' },
+  { id: 'mixed1',  a: ['al','sue'],    b: ['kim','chris'], label: 'Mixed I',  aLabel: 'Al & Sue',  bLabel: 'Kim & Chris' },
+  { id: 'mixed2',  a: ['al','chris'],  b: ['kim','sue'],   label: 'Mixed II', aLabel: 'Al & Chris',bLabel: 'Kim & Sue' },
 ];
 
-let games = JSON.parse(localStorage.getItem('rivalry_games') || '[]');
+let games = [];
 let selectedMatchup = null;
 let selectedWinner = null;
 let trashIndex = -1;
 
-function save() { localStorage.setItem('rivalry_games', JSON.stringify(games)); }
+// ── SYNC STATUS ──
+function showSync(type, msg) {
+  const bar = document.getElementById('sync-bar');
+  bar.textContent = msg;
+  bar.className = `sync-bar show ${type}`;
+  if (type !== 'syncing') setTimeout(() => bar.classList.remove('show'), 2500);
+}
+
+function setLive(state) {
+  const dot = document.getElementById('live-dot');
+  dot.className = `live-dot ${state}`;
+  dot.textContent = state === 'connected' ? 'live' : state;
+}
+
+// ── REAL-TIME LISTENER ──
+const q = query(collection(db, 'games'), orderBy('date', 'asc'));
+onSnapshot(q, (snapshot) => {
+  games = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  setLive('connected');
+  updateScoreboard();
+  rerenderActiveTab();
+}, (err) => {
+  setLive('error');
+  showSync('error', 'Connection lost — retrying...');
+});
+
+// ── LOG GAME ──
+window.logGame = async function() {
+  if (!selectedMatchup || !selectedWinner) return;
+  const btn = document.getElementById('log-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  showSync('syncing', 'Syncing to all devices...');
+  try {
+    await addDoc(collection(db, 'games'), {
+      matchupId: selectedMatchup,
+      winner: selectedWinner,
+      date: new Date().toISOString(),
+    });
+    showSync('synced', '✓ Synced to all phones!');
+    selectedMatchup = null;
+    selectedWinner = null;
+    renderMatchupGrid();
+    document.getElementById('winner-section').classList.remove('show');
+    document.getElementById('log-btn').classList.remove('show');
+    const succ = document.getElementById('log-success');
+    succ.style.display = 'block';
+    setTimeout(() => succ.style.display = 'none', 3000);
+  } catch(e) {
+    showSync('error', 'Save failed — check connection');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Record Win →';
+};
+
+// ── DELETE ──
+window.deleteGame = async function(id) {
+  if (!confirm('Remove this game from the record?')) return;
+  try {
+    await deleteDoc(doc(db, 'games', id));
+    showSync('synced', '✓ Game removed');
+  } catch(e) {
+    showSync('error', 'Delete failed');
+  }
+};
+
+window.clearAll = async function() {
+  if (!confirm('Clear the ENTIRE game history? This cannot be undone.')) return;
+  try {
+    const batch = writeBatch(db);
+    games.forEach(g => batch.delete(doc(db, 'games', g.id)));
+    await batch.commit();
+    showSync('synced', '✓ History cleared');
+  } catch(e) {
+    showSync('error', 'Clear failed');
+  }
+};
 
 // ── TRASH TALK ──
 function getTrashLines() {
   const coozW = games.filter(g => g.matchupId==='classic' && g.winner==='a').length;
   const keezW = games.filter(g => g.matchupId==='classic' && g.winner==='b').length;
   const total = games.length;
-  const streak = getStreak();
   const lastGame = games[games.length-1];
 
   const lines = [
@@ -722,6 +736,8 @@ function getTrashLines() {
     "Chris says the court was uneven. It wasn't.",
     "Somewhere out there, a pickleball is judging you.",
     "The net has no loyalty. Ask it.",
+    "Four players. One scoreboard. Zero excuses.",
+    "This rivalry is being recorded. Act accordingly.",
   ];
 
   if (total === 0) return [
@@ -743,79 +759,80 @@ function getTrashLines() {
   if (coozW === keezW && total > 4) lines.push(
     `${coozW} wins each. Tied. Nobody wins. Everybody suffers.`,
     "Perfectly balanced, as all things should be. For now.",
-    "It's a tie. The rivalry continues. As it must."
   );
+  const streak = getStreak();
   if (streak && streak.count >= 3) lines.push(
     `${streak.team} has won ${streak.count} in a row. The other team is 'focusing on fundamentals.'`,
-    `${streak.count}-game streak for ${streak.team}. The momentum is real. The excuses are realer.`
+    `${streak.count}-game streak. The momentum is real. The excuses are realer.`
   );
   if (lastGame) {
     const m = MATCHUPS.find(x=>x.id===lastGame.matchupId);
     const wLabel = lastGame.winner==='a' ? m.aLabel : m.bLabel;
     lines.push(`Last game went to ${wLabel}. The other team is already planning revenge.`);
   }
-
   return lines;
 }
 
-function refreshTrashTalk() {
+window.refreshTrashTalk = function() {
   const lines = getTrashLines();
   let idx = trashIndex;
   while (idx === trashIndex && lines.length > 1) idx = Math.floor(Math.random()*lines.length);
   trashIndex = idx;
   const el = document.getElementById('trash-talk-text');
   el.style.opacity = '0';
-  setTimeout(() => { el.textContent = lines[idx]; el.style.opacity = '1'; el.style.transition = 'opacity 0.3s'; }, 150);
-}
+  setTimeout(() => { el.textContent = lines[idx]; el.style.transition = 'opacity 0.3s'; el.style.opacity = '1'; }, 150);
+};
 
 function getStreak() {
-  if (!games.length) return null;
-  const classicGames = games.filter(g => g.matchupId === 'classic');
-  if (classicGames.length < 2) return null;
-  const last = classicGames[classicGames.length-1];
+  const cg = games.filter(g=>g.matchupId==='classic');
+  if (cg.length < 2) return null;
+  const last = cg[cg.length-1];
   let count = 1;
-  for (let i = classicGames.length-2; i >= 0; i--) {
-    if (classicGames[i].winner === last.winner) count++;
-    else break;
-  }
+  for (let i=cg.length-2; i>=0; i--) { if (cg[i].winner===last.winner) count++; else break; }
   if (count < 2) return null;
-  const m = MATCHUPS.find(x=>x.id==='classic');
-  return { count, team: last.winner === 'a' ? 'Team Cooz' : 'Team Keez' };
+  return { count, team: last.winner==='a'?'Team Cooz':'Team Keez' };
 }
 
 // ── SCOREBOARD ──
 function updateScoreboard() {
-  const coozW = games.filter(g => g.matchupId==='classic' && g.winner==='a').length;
-  const keezW = games.filter(g => g.matchupId==='classic' && g.winner==='b').length;
-  const total = coozW + keezW;
+  const coozW = games.filter(g=>g.matchupId==='classic'&&g.winner==='a').length;
+  const keezW = games.filter(g=>g.matchupId==='classic'&&g.winner==='b').length;
+  const total = coozW+keezW;
   document.getElementById('sb-cooz').textContent = coozW;
   document.getElementById('sb-keez').textContent = keezW;
-  document.getElementById('sb-pct').textContent = total > 0
-    ? `${Math.round(100*coozW/total)}% · ${Math.round(100*keezW/total)}%` : '—';
-
+  document.getElementById('sb-pct').textContent = total>0 ? `${Math.round(100*coozW/total)}% · ${Math.round(100*keezW/total)}%` : '—';
   const streak = getStreak();
   const banner = document.getElementById('streak-banner');
   if (streak && streak.count >= 3) {
     banner.textContent = `🔥 ${streak.team} — ${streak.count} game win streak`;
     banner.classList.add('show');
-  } else { banner.classList.remove('show'); }
-
+  } else banner.classList.remove('show');
   refreshTrashTalk();
 }
 
 // ── TABS ──
-function showTab(t) {
+window.showTab = function(t) {
   document.querySelectorAll('.tab').forEach((el,i) => {
-    el.classList.toggle('active', ['log','matchups','players','history'][i] === t);
+    el.classList.toggle('active', ['log','matchups','players','history'][i]===t);
   });
-  document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('active'));
   document.getElementById('panel-'+t).classList.add('active');
+  if (t==='matchups') renderMatchups();
+  if (t==='players') renderPlayers();
+  if (t==='history') renderHistory();
+};
+
+function rerenderActiveTab() {
+  const active = document.querySelector('.tab.active');
+  const tabs = ['log','matchups','players','history'];
+  const idx = [...document.querySelectorAll('.tab')].indexOf(active);
+  const t = tabs[idx];
   if (t==='matchups') renderMatchups();
   if (t==='players') renderPlayers();
   if (t==='history') renderHistory();
 }
 
-// ── LOG GAME ──
+// ── LOG GAME UI ──
 function renderMatchupGrid() {
   const grid = document.getElementById('matchup-grid');
   grid.innerHTML = MATCHUPS.map(m => `
@@ -827,7 +844,7 @@ function renderMatchupGrid() {
     </div>`).join('');
 }
 
-function selectMatchup(id) {
+window.selectMatchup = function(id) {
   selectedMatchup = id;
   selectedWinner = null;
   renderMatchupGrid();
@@ -835,57 +852,27 @@ function selectMatchup(id) {
   document.getElementById('winner-section').classList.add('show');
   document.getElementById('log-btn').classList.remove('show');
   document.getElementById('log-success').style.display = 'none';
-}
+};
 
 function renderWinnerPicker() {
   const m = MATCHUPS.find(x=>x.id===selectedMatchup);
   if (!m) return;
-  const btns = document.getElementById('winner-btns');
   const clsA = selectedWinner==='a'?'selected-a':'team-a';
   const clsB = selectedWinner==='b'?'selected-b':'team-b';
-
-  const aTeam = m.id==='classic'?'Team Cooz':m.aLabel;
-  const bTeam = m.id==='classic'?'Team Keez':m.bLabel;
-
-  btns.innerHTML = `
+  document.getElementById('winner-btns').innerHTML = `
     <button class="winner-btn ${clsA}" onclick="selectWinner('a')">
-      ${aTeam}
-      <span class="wb-players">${m.a.map(p=>PLAYERS[p].name).join(' & ')}</span>
+      ${m.aLabel}<span class="wb-players">${m.a.map(p=>PLAYERS[p].name).join(' & ')}</span>
     </button>
     <button class="winner-btn ${clsB}" onclick="selectWinner('b')">
-      ${bTeam}
-      <span class="wb-players">${m.b.map(p=>PLAYERS[p].name).join(' & ')}</span>
+      ${m.bLabel}<span class="wb-players">${m.b.map(p=>PLAYERS[p].name).join(' & ')}</span>
     </button>`;
 }
 
-function selectWinner(w) {
+window.selectWinner = function(w) {
   selectedWinner = w;
   renderWinnerPicker();
   document.getElementById('log-btn').classList.add('show');
-}
-
-function logGame() {
-  if (!selectedMatchup || !selectedWinner) return;
-  const now = new Date();
-  games.push({
-    id: Date.now(),
-    matchupId: selectedMatchup,
-    winner: selectedWinner,
-    date: now.toISOString(),
-  });
-  save();
-  updateScoreboard();
-
-  // Reset
-  selectedMatchup = null;
-  selectedWinner = null;
-  renderMatchupGrid();
-  document.getElementById('winner-section').classList.remove('show');
-  document.getElementById('log-btn').classList.remove('show');
-  const succ = document.getElementById('log-success');
-  succ.style.display = 'block';
-  setTimeout(() => succ.style.display='none', 2500);
-}
+};
 
 // ── MATCHUPS ──
 function renderMatchups() {
@@ -896,11 +883,11 @@ function renderMatchups() {
     const aW = mg.filter(g=>g.winner==='a').length;
     const bW = mg.filter(g=>g.winner==='b').length;
     const total = aW+bW;
-    const aPct = total>0 ? Math.round(100*aW/total) : 50;
+    const aPct = total>0?Math.round(100*aW/total):50;
     const aColor = m.id==='classic'?'cooz-color':'neutral';
     const bColor = m.id==='classic'?'keez-color':'neutral';
     return `<div class="matchup-stat-card">
-      <div class="ms-team">
+      <div>
         <div class="ms-name ${aColor}">${m.id==='classic'?'Team Cooz':m.a.map(p=>PLAYERS[p].name).join(' &amp; ')}</div>
         <div class="ms-players">${m.a.map(p=>PLAYERS[p].name).join(' · ')}</div>
       </div>
@@ -909,7 +896,7 @@ function renderMatchups() {
         <div class="ms-bar"><div class="ms-bar-fill" style="width:${aPct}%"></div></div>
         <div class="ms-games">${total} game${total!==1?'s':''} · ${m.label}</div>
       </div>
-      <div class="ms-team ms-right">
+      <div class="ms-right">
         <div class="ms-name ${bColor}">${m.id==='classic'?'Team Keez':m.b.map(p=>PLAYERS[p].name).join(' &amp; ')}</div>
         <div class="ms-players">${m.b.map(p=>PLAYERS[p].name).join(' · ')}</div>
       </div>
@@ -921,30 +908,21 @@ function renderMatchups() {
 function renderPlayers() {
   const out = document.getElementById('players-output');
   if (!games.length) { out.innerHTML='<div class="no-games">No games logged yet.</div>'; return; }
-
   const stats = {};
-  Object.keys(PLAYERS).forEach(p => stats[p] = { wins:0, losses:0 });
-
+  Object.keys(PLAYERS).forEach(p=>stats[p]={wins:0,losses:0});
   games.forEach(g => {
     const m = MATCHUPS.find(x=>x.id===g.matchupId);
-    const winners = g.winner==='a' ? m.a : m.b;
-    const losers  = g.winner==='a' ? m.b : m.a;
-    winners.forEach(p => stats[p].wins++);
-    losers.forEach(p => stats[p].losses++);
+    const winners = g.winner==='a'?m.a:m.b;
+    const losers  = g.winner==='a'?m.b:m.a;
+    winners.forEach(p=>stats[p].wins++);
+    losers.forEach(p=>stats[p].losses++);
   });
-
-  const ranked = Object.entries(stats)
-    .sort((a,b) => {
-      const pa = a[1], pb = b[1];
-      const ga = pa.wins+pa.losses, gb = pb.wins+pb.losses;
-      const ra = ga>0?pa.wins/ga:0, rb = gb>0?pb.wins/gb:0;
-      return rb-ra;
-    });
-
-  out.innerHTML = ranked.map(([pid,s],i) => {
-    const p = PLAYERS[pid];
-    const total = s.wins+s.losses;
-    const pct = total>0 ? Math.round(100*s.wins/total) : 0;
+  const ranked = Object.entries(stats).sort((a,b)=>{
+    const ga=a[1].wins+a[1].losses, gb=b[1].wins+b[1].losses;
+    return (gb>0?b[1].wins/gb:0)-(ga>0?a[1].wins/ga:0);
+  });
+  out.innerHTML = ranked.map(([pid,s],i)=>{
+    const p=PLAYERS[pid], total=s.wins+s.losses, pct=total>0?Math.round(100*s.wins/total):0;
     return `<div class="player-stat">
       <div class="ps-rank ${i===0?'top':''}">${i+1}</div>
       <div class="ps-avatar ${p.team}">${p.initial}</div>
@@ -964,43 +942,23 @@ function renderPlayers() {
 function renderHistory() {
   const out = document.getElementById('history-output');
   if (!games.length) { out.innerHTML='<div class="history-empty">No games logged yet. Get out there.</div>'; return; }
-
-  const sorted = [...games].reverse();
-  out.innerHTML = sorted.map(g => {
-    const m = MATCHUPS.find(x=>x.id===g.matchupId);
-    const d = new Date(g.date);
-    const dateStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
-    const wLabel = g.winner==='a'?m.aLabel:m.bLabel;
-    const wTeam = g.matchupId==='classic' ? (g.winner==='a'?'cooz':'keez') : 'mixed';
-    const winnerDisplay = g.matchupId==='classic' ? (g.winner==='a'?'Team Cooz':'Team Keez') : wLabel;
-    return `<div class="history-item" id="hi-${g.id}">
+  out.innerHTML = [...games].reverse().map(g=>{
+    const m=MATCHUPS.find(x=>x.id===g.matchupId);
+    const d=new Date(g.date);
+    const dateStr=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
+    const wLabel=g.winner==='a'?m.aLabel:m.bLabel;
+    const wTeam=g.matchupId==='classic'?(g.winner==='a'?'cooz':'keez'):'mixed';
+    return `<div class="history-item">
       <div class="hi-date">${dateStr}</div>
       <div class="hi-matchup">${m.a.map(p=>PLAYERS[p].name).join(' & ')} <span style="color:var(--ink3)">vs</span> ${m.b.map(p=>PLAYERS[p].name).join(' & ')}</div>
-      <div class="hi-winner ${wTeam}">${winnerDisplay}</div>
-      <button class="hi-delete" onclick="deleteGame(${g.id})" title="Delete">×</button>
+      <div class="hi-winner ${wTeam}">${wLabel}</div>
+      <button class="hi-delete" onclick="deleteGame('${g.id}')" title="Delete">×</button>
     </div>`;
   }).join('');
 }
 
-function deleteGame(id) {
-  if (!confirm('Remove this game from the record?')) return;
-  games = games.filter(g=>g.id!==id);
-  save();
-  updateScoreboard();
-  renderHistory();
-}
-
-function clearAll() {
-  if (!confirm('Clear the entire game history? This cannot be undone.')) return;
-  games = [];
-  save();
-  updateScoreboard();
-  renderHistory();
-}
-
 // ── INIT ──
 renderMatchupGrid();
-updateScoreboard();
 </script>
 </body>
 </html>
