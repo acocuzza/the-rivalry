@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Rivalry — Cooz vs Keez</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cooz: #1a3a8f;
+  --cooz-light: #e8eeff;
+  --cooz-mid: #3b5fcf;
+  --keez: #8f1a1a;
+  --keez-light: #fee8e8;
+  --keez-mid: #cf3b3b;
+  --gold: #c9a84c;
+  --bg: #f5f2ec;
+  --bg2: #fff;
+  --ink: #1a1612;
+  --ink2: #4a4540;
+  --ink3: #9a948e;
+  --border: #ddd8d0;
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(26,22,18,0.08), 0 8px 32px rgba(26,22,18,0.04);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Crimson Pro', Georgia, serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Subtle paper texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: 48px 0 32px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 36px;
+  position: relative;
+}
+.header-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 12px;
+}
+.header-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 12vw, 88px);
+  letter-spacing: 0.02em;
+  line-height: 0.9;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.title-cooz { color: var(--cooz); }
+.title-vs {
+  font-size: clamp(28px, 6vw, 44px);
+  color: var(--ink3);
+  padding: 0 12px;
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-weight: 400;
+  align-self: center;
+}
+.title-keez { color: var(--keez); }
+.header-sub {
+  font-size: 15px;
+  color: var(--ink3);
+  font-style: italic;
+  margin-top: 10px;
+}
+
+/* ── RIVALRY SCOREBOARD ── */
+.scoreboard {
+  background: var(--ink);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.scoreboard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(26,58,143,0.3) 0%, transparent 50%, rgba(143,26,26,0.3) 100%);
+  pointer-events: none;
+}
+.score-team { text-align: center; position: relative; }
+.score-team-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.score-team-name.cooz { color: #7a9fff; }
+.score-team-name.keez { color: #ff7a7a; }
+.score-team-players {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.score-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 72px;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+.score-num.cooz { color: #7a9fff; }
+.score-num.keez { color: #ff7a7a; }
+.score-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-top: 4px;
+}
+.score-divider { text-align: center; position: relative; }
+.score-divider-line {
+  width: 1px;
+  height: 80px;
+  background: rgba(255,255,255,0.15);
+  margin: 0 auto;
+}
+.score-pct {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 8px;
+  letter-spacing: 0.06em;
+}
+
+/* ── STREAK BANNER ── */
+.streak-banner {
+  background: var(--gold);
+  border-radius: 8px;
+  padding: 10px 18px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 500;
+  display: none;
+}
+.streak-banner.show { display: block; }
+
+/* ── TRASH TALK ── */
+.trash-talk {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.trash-talk-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.trash-talk-text {
+  font-size: 17px;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.trash-refresh {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: none; border: none;
+  font-size: 16px; cursor: pointer;
+  color: var(--ink3);
+  transition: transform 0.3s;
+}
+.trash-refresh:hover { transform: rotate(180deg); color: var(--gold); }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  gap: 3px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+.tab {
+  flex: 1;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tab:hover { color: var(--ink); }
+.tab.active { background: var(--ink); color: white; }
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; animation: fadeUp 0.2s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── LOG GAME ── */
+.log-section { margin-bottom: 24px; }
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.matchup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.matchup-card {
+  background: var(--bg2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.matchup-card:hover { border-color: var(--ink3); transform: translateY(-1px); }
+.matchup-card.selected { border-color: var(--ink); background: var(--ink); }
+.matchup-card.selected .mc-team { color: white; }
+.matchup-card.selected .mc-vs { color: rgba(255,255,255,0.5); }
+.matchup-card.selected .mc-label { color: rgba(255,255,255,0.6); }
+.mc-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 8px;
+}
+.mc-team {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.mc-vs {
+  font-size: 11px;
+  color: var(--ink3);
+  font-style: italic;
+  margin: 4px 0;
+}
+
+/* Winner picker */
+.winner-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  display: none;
+}
+.winner-section.show { display: block; }
+.winner-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 14px;
+  text-align: center;
+}
+.winner-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.winner-btn {
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  transition: all 0.15s;
+  text-align: center;
+  line-height: 1.2;
+}
+.winner-btn .wb-players {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 400;
+  display: block;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+.winner-btn.team-a:hover { border-color: var(--cooz); background: var(--cooz-light); color: var(--cooz); }
+.winner-btn.team-b:hover { border-color: var(--keez); background: var(--keez-light); color: var(--keez); }
+.winner-btn.selected-a { border-color: var(--cooz); background: var(--cooz); color: white; }
+.winner-btn.selected-b { border-color: var(--keez); background: var(--keez); color: white; }
+
+.log-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: none;
+}
+.log-btn.show { display: block; }
+.log-btn:hover { background: #2a2420; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,22,18,0.2); }
+
+.log-success {
+  text-align: center;
+  padding: 12px;
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  border-radius: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: #065f46;
+  letter-spacing: 0.06em;
+  margin-top: 12px;
+  display: none;
+  animation: fadeUp 0.3s ease;
+}
+
+/* ── ALL MATCHUPS ── */
+.matchup-stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow);
+}
+.ms-team { }
+.ms-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+.ms-name.cooz-color { color: var(--cooz); }
+.ms-name.keez-color { color: var(--keez); }
+.ms-name.neutral { color: var(--ink); }
+.ms-players {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ink3);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.ms-record { text-align: center; }
+.ms-wins {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  line-height: 1;
+  color: var(--ink);
+}
+.ms-dash { color: var(--ink3); margin: 0 2px; }
+.ms-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  margin-top: 8px;
+  overflow: hidden;
+}
+.ms-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--cooz), var(--cooz-mid));
+  transition: width 0.4s ease;
+}
+.ms-games {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink3);
+  letter-spacing: 0.06em;
+  text-align: center;
+  margin-top: 6px;
+}
+.ms-right { text-align: right; }
+
+/* ── INDIVIDUAL STATS ── */
+.player-stat {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow);
+}
+.ps-rank {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: var(--border);
+  width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.ps-rank.top { color: var(--gold); }
+.ps-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.ps-avatar.cooz { background: var(--cooz-light); color: var(--cooz); }
+.ps-avatar.keez { background: var(--keez-light); color: var(--keez); }
+.ps-info { flex: 1; }
+.ps-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.ps-team {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.ps-team.cooz { color: var(--cooz); }
+.ps-team.keez { color: var(--keez); }
+.ps-stats { text-align: right; }
+.ps-record {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.ps-pct {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+/* ── HISTORY ── */
+.history-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hi-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--ink3);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: 72px;
+}
+.hi-matchup {
+  flex: 1;
+  font-size: 14px;
+  color: var(--ink2);
+}
+.hi-matchup strong { color: var(--ink); }
+.hi-winner {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.hi-winner.cooz { background: var(--cooz-light); color: var(--cooz); }
+.hi-winner.keez { background: var(--keez-light); color: var(--keez); }
+.hi-winner.mixed { background: #f5f5f5; color: var(--ink3); }
+.hi-delete {
+  background: none; border: none; cursor: pointer;
+  color: var(--border); font-size: 14px;
+  transition: color 0.12s; flex-shrink: 0;
+}
+.hi-delete:hover { color: #dc2626; }
+
+.history-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--ink3);
+  font-style: italic;
+  font-size: 16px;
+}
+
+.clear-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: var(--ink3);
+  cursor: pointer;
+  transition: all 0.12s;
+  margin-bottom: 14px;
+}
+.clear-btn:hover { border-color: #dc2626; color: #dc2626; }
+
+.no-games {
+  text-align: center;
+  padding: 32px;
+  color: var(--ink3);
+  font-style: italic;
+  font-size: 16px;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-eyebrow">The Official Record · Est. 2026</div>
+    <div class="header-title">
+      <span class="title-cooz">COOZ</span>
+      <span class="title-vs">vs</span>
+      <span class="title-keez">KEEZ</span>
+    </div>
+    <div class="header-sub">Al & Kim · Chris & Sue · The Rivalry That Never Ends</div>
+  </header>
+
+  <!-- SCOREBOARD -->
+  <div class="scoreboard">
+    <div class="score-team">
+      <div class="score-team-name cooz">Team Cooz</div>
+      <div class="score-team-players">Al & Kim</div>
+      <div class="score-num cooz" id="sb-cooz">0</div>
+      <div class="score-label">Classic Wins</div>
+    </div>
+    <div class="score-divider">
+      <div class="score-divider-line"></div>
+      <div class="score-pct" id="sb-pct">—</div>
+    </div>
+    <div class="score-team">
+      <div class="score-team-name keez">Team Keez</div>
+      <div class="score-team-players">Chris & Sue</div>
+      <div class="score-num keez" id="sb-keez">0</div>
+      <div class="score-label">Classic Wins</div>
+    </div>
+  </div>
+
+  <div class="streak-banner" id="streak-banner"></div>
+
+  <!-- TRASH TALK -->
+  <div class="trash-talk" id="trash-talk-box">
+    <div class="trash-talk-label">📣 Bulletin Board</div>
+    <div class="trash-talk-text" id="trash-talk-text">No games logged yet. Someone's afraid to start the record...</div>
+    <button class="trash-refresh" onclick="refreshTrashTalk()" title="New quote">↻</button>
+  </div>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <button class="tab active" onclick="showTab('log')">Log Game</button>
+    <button class="tab" onclick="showTab('matchups')">Matchups</button>
+    <button class="tab" onclick="showTab('players')">Players</button>
+    <button class="tab" onclick="showTab('history')">History</button>
+  </nav>
+
+  <!-- LOG GAME -->
+  <div class="panel active" id="panel-log">
+    <div class="log-section">
+      <div class="section-title">Pick the Matchup</div>
+      <div class="matchup-grid" id="matchup-grid"></div>
+    </div>
+
+    <div class="winner-section" id="winner-section">
+      <div class="winner-label">Who Won?</div>
+      <div class="winner-btns" id="winner-btns"></div>
+    </div>
+
+    <button class="log-btn" id="log-btn" onclick="logGame()">Record Win →</button>
+    <div class="log-success" id="log-success">✓ Game recorded!</div>
+  </div>
+
+  <!-- MATCHUPS -->
+  <div class="panel" id="panel-matchups">
+    <div class="section-title">All Matchup Records</div>
+    <div id="matchups-output"></div>
+  </div>
+
+  <!-- PLAYERS -->
+  <div class="panel" id="panel-players">
+    <div class="section-title">Individual Records</div>
+    <div id="players-output"></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="panel" id="panel-history">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div class="section-title" style="margin:0">Game Log</div>
+      <button class="clear-btn" onclick="clearAll()">Clear All</button>
+    </div>
+    <div id="history-output"></div>
+  </div>
+
+</div>
+
+<script>
+// ── DATA ──
+const PLAYERS = {
+  al:   { name: 'Al',   team: 'cooz', initial: 'A' },
+  kim:  { name: 'Kim',  team: 'cooz', initial: 'K' },
+  chris:{ name: 'Chris',team: 'keez', initial: 'C' },
+  sue:  { name: 'Sue',  team: 'keez', initial: 'S' },
+};
+
+const MATCHUPS = [
+  { id: 'classic',  a: ['al','kim'],   b: ['chris','sue'], label: 'Classic',  aLabel:'Cooz', bLabel:'Keez' },
+  { id: 'mixed1',   a: ['al','sue'],   b: ['kim','chris'], label: 'Mixed I',  aLabel:'Al & Sue', bLabel:'Kim & Chris' },
+  { id: 'mixed2',   a: ['al','chris'], b: ['kim','sue'],   label: 'Mixed II', aLabel:'Al & Chris', bLabel:'Kim & Sue' },
+];
+
+let games = JSON.parse(localStorage.getItem('rivalry_games') || '[]');
+let selectedMatchup = null;
+let selectedWinner = null;
+let trashIndex = -1;
+
+function save() { localStorage.setItem('rivalry_games', JSON.stringify(games)); }
+
+// ── TRASH TALK ──
+function getTrashLines() {
+  const coozW = games.filter(g => g.matchupId==='classic' && g.winner==='a').length;
+  const keezW = games.filter(g => g.matchupId==='classic' && g.winner==='b').length;
+  const total = games.length;
+  const streak = getStreak();
+  const lastGame = games[games.length-1];
+
+  const lines = [
+    "Dink responsibly. Or don't. We'll see who's crying at the net.",
+    "The ball doesn't lie. Neither does the scoreboard.",
+    "Every dink tells a story. This one's a tragedy for someone.",
+    "Al's backhand called. It wants a rematch.",
+    "Kim asked me to remind you: she doesn't miss. You do.",
+    "Sue's been practicing. You've been warned.",
+    "Chris says the court was uneven. It wasn't.",
+    "Somewhere out there, a pickleball is judging you.",
+    "The net has no loyalty. Ask it.",
+  ];
+
+  if (total === 0) return [
+    "No games logged yet. Someone's afraid to start the record...",
+    "The scoreboard is empty. The trash talk is not.",
+    "Zero games. Maximum excuses. Classic.",
+  ];
+
+  if (coozW > keezW + 3) lines.push(
+    `Team Cooz is up ${coozW}-${keezW} in the classics. Al and Kim are insufferable right now.`,
+    "Cooz dominance is real. Keez keeps saying 'we're warming up.'",
+    `${coozW} classic wins for Cooz. Someone send Keez a sympathy card.`
+  );
+  if (keezW > coozW + 3) lines.push(
+    `Team Keez up ${keezW}-${coozW}. Chris and Sue are way too happy about this.`,
+    "Keez is on fire. Cooz is on... the bench.",
+    `${keezW} classic wins for Keez. Al and Kim need a team meeting.`
+  );
+  if (coozW === keezW && total > 4) lines.push(
+    `${coozW} wins each. Tied. Nobody wins. Everybody suffers.`,
+    "Perfectly balanced, as all things should be. For now.",
+    "It's a tie. The rivalry continues. As it must."
+  );
+  if (streak && streak.count >= 3) lines.push(
+    `${streak.team} has won ${streak.count} in a row. The other team is 'focusing on fundamentals.'`,
+    `${streak.count}-game streak for ${streak.team}. The momentum is real. The excuses are realer.`
+  );
+  if (lastGame) {
+    const m = MATCHUPS.find(x=>x.id===lastGame.matchupId);
+    const wLabel = lastGame.winner==='a' ? m.aLabel : m.bLabel;
+    lines.push(`Last game went to ${wLabel}. The other team is already planning revenge.`);
+  }
+
+  return lines;
+}
+
+function refreshTrashTalk() {
+  const lines = getTrashLines();
+  let idx = trashIndex;
+  while (idx === trashIndex && lines.length > 1) idx = Math.floor(Math.random()*lines.length);
+  trashIndex = idx;
+  const el = document.getElementById('trash-talk-text');
+  el.style.opacity = '0';
+  setTimeout(() => { el.textContent = lines[idx]; el.style.opacity = '1'; el.style.transition = 'opacity 0.3s'; }, 150);
+}
+
+function getStreak() {
+  if (!games.length) return null;
+  const classicGames = games.filter(g => g.matchupId === 'classic');
+  if (classicGames.length < 2) return null;
+  const last = classicGames[classicGames.length-1];
+  let count = 1;
+  for (let i = classicGames.length-2; i >= 0; i--) {
+    if (classicGames[i].winner === last.winner) count++;
+    else break;
+  }
+  if (count < 2) return null;
+  const m = MATCHUPS.find(x=>x.id==='classic');
+  return { count, team: last.winner === 'a' ? 'Team Cooz' : 'Team Keez' };
+}
+
+// ── SCOREBOARD ──
+function updateScoreboard() {
+  const coozW = games.filter(g => g.matchupId==='classic' && g.winner==='a').length;
+  const keezW = games.filter(g => g.matchupId==='classic' && g.winner==='b').length;
+  const total = coozW + keezW;
+  document.getElementById('sb-cooz').textContent = coozW;
+  document.getElementById('sb-keez').textContent = keezW;
+  document.getElementById('sb-pct').textContent = total > 0
+    ? `${Math.round(100*coozW/total)}% · ${Math.round(100*keezW/total)}%` : '—';
+
+  const streak = getStreak();
+  const banner = document.getElementById('streak-banner');
+  if (streak && streak.count >= 3) {
+    banner.textContent = `🔥 ${streak.team} — ${streak.count} game win streak`;
+    banner.classList.add('show');
+  } else { banner.classList.remove('show'); }
+
+  refreshTrashTalk();
+}
+
+// ── TABS ──
+function showTab(t) {
+  document.querySelectorAll('.tab').forEach((el,i) => {
+    el.classList.toggle('active', ['log','matchups','players','history'][i] === t);
+  });
+  document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+  if (t==='matchups') renderMatchups();
+  if (t==='players') renderPlayers();
+  if (t==='history') renderHistory();
+}
+
+// ── LOG GAME ──
+function renderMatchupGrid() {
+  const grid = document.getElementById('matchup-grid');
+  grid.innerHTML = MATCHUPS.map(m => `
+    <div class="matchup-card${selectedMatchup===m.id?' selected':''}" onclick="selectMatchup('${m.id}')">
+      <div class="mc-label">${m.label}</div>
+      <div class="mc-team">${m.a.map(p=>PLAYERS[p].name).join(' & ')}</div>
+      <div class="mc-vs">vs</div>
+      <div class="mc-team">${m.b.map(p=>PLAYERS[p].name).join(' & ')}</div>
+    </div>`).join('');
+}
+
+function selectMatchup(id) {
+  selectedMatchup = id;
+  selectedWinner = null;
+  renderMatchupGrid();
+  renderWinnerPicker();
+  document.getElementById('winner-section').classList.add('show');
+  document.getElementById('log-btn').classList.remove('show');
+  document.getElementById('log-success').style.display = 'none';
+}
+
+function renderWinnerPicker() {
+  const m = MATCHUPS.find(x=>x.id===selectedMatchup);
+  if (!m) return;
+  const btns = document.getElementById('winner-btns');
+  const clsA = selectedWinner==='a'?'selected-a':'team-a';
+  const clsB = selectedWinner==='b'?'selected-b':'team-b';
+
+  const aTeam = m.id==='classic'?'Team Cooz':m.aLabel;
+  const bTeam = m.id==='classic'?'Team Keez':m.bLabel;
+
+  btns.innerHTML = `
+    <button class="winner-btn ${clsA}" onclick="selectWinner('a')">
+      ${aTeam}
+      <span class="wb-players">${m.a.map(p=>PLAYERS[p].name).join(' & ')}</span>
+    </button>
+    <button class="winner-btn ${clsB}" onclick="selectWinner('b')">
+      ${bTeam}
+      <span class="wb-players">${m.b.map(p=>PLAYERS[p].name).join(' & ')}</span>
+    </button>`;
+}
+
+function selectWinner(w) {
+  selectedWinner = w;
+  renderWinnerPicker();
+  document.getElementById('log-btn').classList.add('show');
+}
+
+function logGame() {
+  if (!selectedMatchup || !selectedWinner) return;
+  const now = new Date();
+  games.push({
+    id: Date.now(),
+    matchupId: selectedMatchup,
+    winner: selectedWinner,
+    date: now.toISOString(),
+  });
+  save();
+  updateScoreboard();
+
+  // Reset
+  selectedMatchup = null;
+  selectedWinner = null;
+  renderMatchupGrid();
+  document.getElementById('winner-section').classList.remove('show');
+  document.getElementById('log-btn').classList.remove('show');
+  const succ = document.getElementById('log-success');
+  succ.style.display = 'block';
+  setTimeout(() => succ.style.display='none', 2500);
+}
+
+// ── MATCHUPS ──
+function renderMatchups() {
+  const out = document.getElementById('matchups-output');
+  if (!games.length) { out.innerHTML='<div class="no-games">No games logged yet.</div>'; return; }
+  out.innerHTML = MATCHUPS.map(m => {
+    const mg = games.filter(g=>g.matchupId===m.id);
+    const aW = mg.filter(g=>g.winner==='a').length;
+    const bW = mg.filter(g=>g.winner==='b').length;
+    const total = aW+bW;
+    const aPct = total>0 ? Math.round(100*aW/total) : 50;
+    const aColor = m.id==='classic'?'cooz-color':'neutral';
+    const bColor = m.id==='classic'?'keez-color':'neutral';
+    return `<div class="matchup-stat-card">
+      <div class="ms-team">
+        <div class="ms-name ${aColor}">${m.id==='classic'?'Team Cooz':m.a.map(p=>PLAYERS[p].name).join(' &amp; ')}</div>
+        <div class="ms-players">${m.a.map(p=>PLAYERS[p].name).join(' · ')}</div>
+      </div>
+      <div class="ms-record">
+        <div class="ms-wins"><span style="color:var(--cooz-mid)">${aW}</span><span class="ms-dash">–</span><span style="color:var(--keez-mid)">${bW}</span></div>
+        <div class="ms-bar"><div class="ms-bar-fill" style="width:${aPct}%"></div></div>
+        <div class="ms-games">${total} game${total!==1?'s':''} · ${m.label}</div>
+      </div>
+      <div class="ms-team ms-right">
+        <div class="ms-name ${bColor}">${m.id==='classic'?'Team Keez':m.b.map(p=>PLAYERS[p].name).join(' &amp; ')}</div>
+        <div class="ms-players">${m.b.map(p=>PLAYERS[p].name).join(' · ')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── PLAYERS ──
+function renderPlayers() {
+  const out = document.getElementById('players-output');
+  if (!games.length) { out.innerHTML='<div class="no-games">No games logged yet.</div>'; return; }
+
+  const stats = {};
+  Object.keys(PLAYERS).forEach(p => stats[p] = { wins:0, losses:0 });
+
+  games.forEach(g => {
+    const m = MATCHUPS.find(x=>x.id===g.matchupId);
+    const winners = g.winner==='a' ? m.a : m.b;
+    const losers  = g.winner==='a' ? m.b : m.a;
+    winners.forEach(p => stats[p].wins++);
+    losers.forEach(p => stats[p].losses++);
+  });
+
+  const ranked = Object.entries(stats)
+    .sort((a,b) => {
+      const pa = a[1], pb = b[1];
+      const ga = pa.wins+pa.losses, gb = pb.wins+pb.losses;
+      const ra = ga>0?pa.wins/ga:0, rb = gb>0?pb.wins/gb:0;
+      return rb-ra;
+    });
+
+  out.innerHTML = ranked.map(([pid,s],i) => {
+    const p = PLAYERS[pid];
+    const total = s.wins+s.losses;
+    const pct = total>0 ? Math.round(100*s.wins/total) : 0;
+    return `<div class="player-stat">
+      <div class="ps-rank ${i===0?'top':''}">${i+1}</div>
+      <div class="ps-avatar ${p.team}">${p.initial}</div>
+      <div class="ps-info">
+        <div class="ps-name">${p.name}</div>
+        <div class="ps-team ${p.team}">Team ${p.team==='cooz'?'Cooz':'Keez'}</div>
+      </div>
+      <div class="ps-stats">
+        <div class="ps-record">${s.wins}–${s.losses}</div>
+        <div class="ps-pct">${total>0?pct+'% win rate':'No games'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── HISTORY ──
+function renderHistory() {
+  const out = document.getElementById('history-output');
+  if (!games.length) { out.innerHTML='<div class="history-empty">No games logged yet. Get out there.</div>'; return; }
+
+  const sorted = [...games].reverse();
+  out.innerHTML = sorted.map(g => {
+    const m = MATCHUPS.find(x=>x.id===g.matchupId);
+    const d = new Date(g.date);
+    const dateStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
+    const wLabel = g.winner==='a'?m.aLabel:m.bLabel;
+    const wTeam = g.matchupId==='classic' ? (g.winner==='a'?'cooz':'keez') : 'mixed';
+    const winnerDisplay = g.matchupId==='classic' ? (g.winner==='a'?'Team Cooz':'Team Keez') : wLabel;
+    return `<div class="history-item" id="hi-${g.id}">
+      <div class="hi-date">${dateStr}</div>
+      <div class="hi-matchup">${m.a.map(p=>PLAYERS[p].name).join(' & ')} <span style="color:var(--ink3)">vs</span> ${m.b.map(p=>PLAYERS[p].name).join(' & ')}</div>
+      <div class="hi-winner ${wTeam}">${winnerDisplay}</div>
+      <button class="hi-delete" onclick="deleteGame(${g.id})" title="Delete">×</button>
+    </div>`;
+  }).join('');
+}
+
+function deleteGame(id) {
+  if (!confirm('Remove this game from the record?')) return;
+  games = games.filter(g=>g.id!==id);
+  save();
+  updateScoreboard();
+  renderHistory();
+}
+
+function clearAll() {
+  if (!confirm('Clear the entire game history? This cannot be undone.')) return;
+  games = [];
+  save();
+  updateScoreboard();
+  renderHistory();
+}
+
+// ── INIT ──
+renderMatchupGrid();
+updateScoreboard();
+</script>
+</body>
+</html>
