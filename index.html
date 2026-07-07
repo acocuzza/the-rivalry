@@ -609,6 +609,7 @@ header {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD08fXyMt6S3m8_BX5U1zUcZbhMr1Yus-0",
@@ -621,6 +622,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // ── CONSTANTS ──
 const PLAYERS = {
@@ -655,16 +657,28 @@ function setLive(state) {
   dot.textContent = state === 'connected' ? 'live' : state;
 }
 
-// ── REAL-TIME LISTENER ──
-const q = query(collection(db, 'games'), orderBy('date', 'asc'));
-onSnapshot(q, (snapshot) => {
-  games = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-  setLive('connected');
-  updateScoreboard();
-  rerenderActiveTab();
-}, (err) => {
+// ── ANONYMOUS AUTH + REAL-TIME LISTENER ──
+// Every device signs in silently (no login UI) so Firestore can require
+// request.auth != null instead of being wide open to the internet.
+setLive('connecting');
+signInAnonymously(auth).catch((error) => {
+  console.error('Anonymous sign-in failed:', error);
   setLive('error');
-  showSync('error', 'Connection lost — retrying...');
+  showSync('error', 'Auth failed — refresh to retry');
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) return; // wait for the anonymous session to be issued
+  const q = query(collection(db, 'games'), orderBy('date', 'asc'));
+  onSnapshot(q, (snapshot) => {
+    games = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    setLive('connected');
+    updateScoreboard();
+    rerenderActiveTab();
+  }, (err) => {
+    setLive('error');
+    showSync('error', 'Connection lost — retrying...');
+  });
 });
 
 // ── LOG GAME ──
